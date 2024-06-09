@@ -23,9 +23,9 @@ public class SpringDocConfig {
         @Value("'@project.desc@'") String appDescription,
         @Value("'@project.version@'") String appVersion){
         Info info= new Info()
-                .title(appName)
+                .title("Spring Boot Api Example")
                 .version(appVersion)
-                .description(appDescription)
+                .description("Generic Spring Boot Examples")
                 .contact(
                         new Contact()
                                 .name(devName)
