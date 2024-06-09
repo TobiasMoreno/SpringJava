@@ -11,4 +11,5 @@ public interface MatchService {
 	List<Match> getMatchesByPlayer(Long playerId);
 
 	Match createMatch(MatchDto matchDto);
+	Match getMatchById(Long id);
 }

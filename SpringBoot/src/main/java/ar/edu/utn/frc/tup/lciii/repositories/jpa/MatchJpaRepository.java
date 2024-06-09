@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface MatchJpaRepository extends JpaRepository<MatchEntity, Long> {
 
-	@Query("SELECT  m FROM MatchEntity m where m.player.id = :playerId")
 	Optional<List<MatchEntity>> getAllByPlayerId(Long playerId);
+
 }

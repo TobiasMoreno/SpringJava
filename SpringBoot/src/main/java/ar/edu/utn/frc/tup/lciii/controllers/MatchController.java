@@ -13,10 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Objects;
@@ -44,5 +41,10 @@ public class MatchController {
 		} else{
 			return ResponseEntity.ok(matchSaved);
 		}
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<Match> getMatchById(@PathVariable("id") Long id) {
+		return ResponseEntity.ok(matchService.getMatchById(id));
 	}
 }

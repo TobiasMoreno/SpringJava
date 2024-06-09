@@ -3,10 +3,12 @@ package ar.edu.utn.frc.tup.lciii.models.rps;
 import ar.edu.utn.frc.tup.lciii.models.Match;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
