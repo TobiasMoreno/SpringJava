@@ -1,7 +1,9 @@
 package ar.edu.utn.frc.tup.lciii.controllers;
 
 import ar.edu.utn.frc.tup.lciii.dtos.common.ErrorApi;
+import ar.edu.utn.frc.tup.lciii.models.Match;
 import ar.edu.utn.frc.tup.lciii.models.Player;
+import ar.edu.utn.frc.tup.lciii.services.MatchService;
 import ar.edu.utn.frc.tup.lciii.services.PlayerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,12 +17,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/players")
 public class PlayerController {
 
     @Autowired
     private PlayerService playerService;
+    @Autowired
+    private MatchService matchService;
 
     @Operation(summary = "Description of the method. Get Player by Id",
             description = "Description of the method. Return a player by th id. If the player doesn´t exist return 404")
@@ -51,13 +57,15 @@ public class PlayerController {
     })
     @PostMapping()
     public ResponseEntity<Player> savePlayer(@RequestBody @Valid Player player) {
-
         Player newPlayer = playerService.savePlayer(player);
-
         if (newPlayer == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario o el email , ya existen");
         }
-
         return ResponseEntity.ok(newPlayer);
+    }
+    @GetMapping("/{id}/matches")
+    public ResponseEntity<List<Match>> getMatchesOfPlayer(@PathVariable Long id) {
+        List<Match> matches = matchService.getMatchesByPlayer(id);
+        return ResponseEntity.ok(matches);
     }
 }
