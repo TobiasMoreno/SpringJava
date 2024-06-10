@@ -24,39 +24,39 @@ import java.util.Objects;
 @RequestMapping("/matches")
 public class MatchController {
 
-	@Autowired
-	private MatchService matchService;
+    @Autowired
+    private MatchService matchService;
 
-	@Operation(summary = "Create a new Match",
-			description = "Return the match created.")
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Successful operation",
-					content = @Content(schema = @Schema(implementation = String.class))),
-			@ApiResponse(responseCode = "500", description = "Internet Server Error",
-					content = @Content(schema = @Schema(implementation = ErrorApi.class)))
-	})
-	@PostMapping()
-	public ResponseEntity<Match> saveMatch(@RequestBody @Valid MatchDto matchDto) {
-		Match matchSaved = matchService.createMatch(matchDto);
-		if (Objects.isNull(matchSaved)) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid match");
-		} else {
-			return ResponseEntity.ok(matchSaved);
-		}
-	}
+    @Operation(summary = "Create a new Match",
+            description = "Return the match created.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation",
+                    content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "500", description = "Internet Server Error",
+                    content = @Content(schema = @Schema(implementation = ErrorApi.class)))
+    })
+    @PostMapping("")
+    public ResponseEntity<Match> saveMatch(@RequestBody @Valid MatchDto matchDto) {
+        Match matchSaved = matchService.createMatch(matchDto);
+        if (Objects.isNull(matchSaved)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The request has an error");
+        } else {
+            return ResponseEntity.ok(matchSaved);
+        }
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<Match> getMatchById(@PathVariable("id") Long id) {
-		return ResponseEntity.ok(matchService.getMatchById(id));
-	}
+    @GetMapping("/{id}")
+    public ResponseEntity<Match> getMatchById(@PathVariable Long id) {
+        return ResponseEntity.ok(matchService.getMatchById(id));
+    }
 
-	@PostMapping("/{id}/plays")
-	public ResponseEntity<Play> saveMatch(@PathVariable Long id, @RequestBody @Valid PlayRequest playRequest) {
-		Play playResult = matchService.play(id, playRequest);
-		if (Objects.isNull(playResult)) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The request has an error");
-		} else {
-			return ResponseEntity.ok(playResult);
-		}
-	}
+    @PostMapping("/{id}/plays/")
+    public ResponseEntity<Play> saveMatch(@PathVariable Long id, @RequestBody @Valid PlayRequest playRequest) {
+        Play playResult = matchService.play(id, playRequest);
+        if (Objects.isNull(playResult)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The request has an error");
+        } else {
+            return ResponseEntity.ok(playResult);
+        }
+    }
 }
