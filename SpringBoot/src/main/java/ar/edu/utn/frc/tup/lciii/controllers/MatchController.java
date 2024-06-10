@@ -2,7 +2,9 @@ package ar.edu.utn.frc.tup.lciii.controllers;
 
 import ar.edu.utn.frc.tup.lciii.dtos.common.ErrorApi;
 import ar.edu.utn.frc.tup.lciii.dtos.match.MatchDto;
+import ar.edu.utn.frc.tup.lciii.dtos.play.PlayRequest;
 import ar.edu.utn.frc.tup.lciii.models.Match;
+import ar.edu.utn.frc.tup.lciii.models.Play;
 import ar.edu.utn.frc.tup.lciii.services.MatchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,9 +38,9 @@ public class MatchController {
 	@PostMapping()
 	public ResponseEntity<Match> saveMatch(@RequestBody @Valid MatchDto matchDto) {
 		Match matchSaved = matchService.createMatch(matchDto);
-		if(Objects.isNull(matchSaved)){
+		if (Objects.isNull(matchSaved)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid match");
-		} else{
+		} else {
 			return ResponseEntity.ok(matchSaved);
 		}
 	}
@@ -46,5 +48,15 @@ public class MatchController {
 	@GetMapping("/{id}")
 	public ResponseEntity<Match> getMatchById(@PathVariable("id") Long id) {
 		return ResponseEntity.ok(matchService.getMatchById(id));
+	}
+
+	@PostMapping("/{id}/plays")
+	public ResponseEntity<Play> saveMatch(@PathVariable Long id, @RequestBody @Valid PlayRequest playRequest) {
+		Play playResult = matchService.play(id, playRequest);
+		if (Objects.isNull(playResult)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The request has an error");
+		} else {
+			return ResponseEntity.ok(playResult);
+		}
 	}
 }

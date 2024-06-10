@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.val;
 
 import java.time.LocalDateTime;
 
@@ -22,9 +21,12 @@ public abstract class Match {
 
     private Long id;
     private Game game;
-    private Player player;
+    private Player player1;
+    private Player player2;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
-    LocalDateTime createdDate;
+    LocalDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+    LocalDateTime updatedAt;
     MatchStatus status;
 }

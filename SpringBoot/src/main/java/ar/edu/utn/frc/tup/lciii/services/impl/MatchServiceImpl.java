@@ -1,19 +1,15 @@
 package ar.edu.utn.frc.tup.lciii.services.impl;
 
 import ar.edu.utn.frc.tup.lciii.dtos.match.MatchDto;
+import ar.edu.utn.frc.tup.lciii.dtos.play.PlayRequest;
 import ar.edu.utn.frc.tup.lciii.entities.MatchEntity;
-import ar.edu.utn.frc.tup.lciii.models.Game;
-import ar.edu.utn.frc.tup.lciii.models.Match;
-import ar.edu.utn.frc.tup.lciii.models.MatchStatus;
-import ar.edu.utn.frc.tup.lciii.models.Player;
+import ar.edu.utn.frc.tup.lciii.models.*;
 import ar.edu.utn.frc.tup.lciii.models.rps.MatchRps;
 import ar.edu.utn.frc.tup.lciii.repositories.jpa.MatchEntityFactory;
 import ar.edu.utn.frc.tup.lciii.repositories.jpa.MatchJpaRepository;
-import ar.edu.utn.frc.tup.lciii.services.GameService;
-import ar.edu.utn.frc.tup.lciii.services.MatchFactory;
-import ar.edu.utn.frc.tup.lciii.services.MatchService;
-import ar.edu.utn.frc.tup.lciii.services.PlayerService;
+import ar.edu.utn.frc.tup.lciii.services.*;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +32,8 @@ public class MatchServiceImpl implements MatchService {
 	@Qualifier("modelMaper")
 	@Autowired
 	private ModelMapper modelMapper;
+	@Autowired
+	private PlayStrategyFactory playStrategyFactory;
 
 	@Override
 	public List<Match> getMatchesByPlayer(Long playerId) {
@@ -66,12 +64,25 @@ public class MatchServiceImpl implements MatchService {
 	@Override
 	public Match getMatchById(Long id) {
 		MatchEntity matchEntity = (MatchEntity) Hibernate.unproxy(matchJpaRepository.getReferenceById(id));
-
 		if (matchEntity != null) {
 			Match match = modelMapper.map(matchEntity, MatchFactory.getTypeOfMatch(matchEntity.getGame().getCode()));
 			return match;
 		} else {
 			throw new EntityNotFoundException();
+		}
+	}
+
+	//Funciona igual que la transaction en la BD, si no se hace el ciclo completo, se hace rollback
+	@Transactional
+	@Override
+	public Play play(Long matchId, PlayRequest playRequest) {
+		Match match = this.getMatchById(matchId);
+		if (match == null) {
+			throw new EntityNotFoundException();
+		} else {
+			Play play = PlayFactory.getPlayInstance(playRequest, match.getGame().getCode());
+			PlayMatch playMatch = playStrategyFactory.getPlayStrategy(match.getGame().getCode());
+			return playMatch.play(play, match);
 		}
 	}
 }
